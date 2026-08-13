@@ -1,0 +1,100 @@
+PROJECT TODO
+
+Clean  > Analyze  > Statistics  > SQL  > Flask  > UI
+
+
+
+1. Data Cleaning — usecase1.py
+
+*Load Chicago crime CSV using Pandas
+*Inspect dataset
+*Clean missing values
+*Fix data types
+*Convert Date to datetime
+*Create Year / Month / DayOfWeek / Hour
+*Calculate missing-value percentage with NumPy
+*Store cleaned data in SQLite
+
+
+
+
+
+2. Exploratory Analysis — usecase2.py
+
+*Read cleaned data from database
+*Analyze crime trends by year
+*Find top 10 crime types
+*Calculate crime percentages
+*Calculate arrest rate
+*Analyze Month vs DayOfWeek
+*Find top community areas
+*Generate charts using Matplotlib / Seaborn
+
+
+
+
+
+
+3. Statistical Analysis — usecase3.py
+
+*Calculate community-area crime counts
+*Analyze crimes by hour
+*Find outliers using IQR
+*Create box plot
+*Check correlations
+*Create correlation heatmap
+
+
+
+
+
+4. SQL Reporting — usecase4.py
+
+*Create yearly crime summary
+*Create crime-category summary
+*Create  vw_crime_yearly 
+*Create  vw_crime_by_category 
+*Read SQL views into Pandas
+*Generate reporting charts
+
+
+
+
+
+5. Flask Integration — app.py
+
+*Set up Flask
+*Connect all 4 use cases
+*Create dashboard route
+*Create usecase routes
+*Connect charts / results to pages
+
+
+
+
+
+6. Frontend
+
+*Create  index.html 
+*Create  usecase1.html 
+*Create  usecase2.html 
+*Create  usecase3.html 
+*Create  usecase4.html 
+*Add  style.css 
+*Display KPIs and charts
+*Keep UI simple and consistent
+
+
+
+
+
+## MAIN ORDER
+
+ usecase1.py 
+ usecase2.py 
+ usecase3.py 
+ usecase4.py 
+ app.py 
+HTML/CSS
+
+

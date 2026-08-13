@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case 4 — SQLite Database Reporting & Views</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-shield-lock-fill me-2 fs-4 text-warning"></i>
+                Chicago Crime Analytics
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/usecase1"><i class="bi bi-database-check me-1"></i> Data Ingestion</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/usecase2"><i class="bi bi-bar-chart-line me-1"></i> Exploratory Analysis</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/usecase3"><i class="bi bi-graph-up-arrow me-1"></i> Statistical Insights</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/usecase4"><i class="bi bi-table me-1"></i> SQL Reporting</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="p-4 mb-4 bg-white rounded-3 shadow-sm border-start border-4 border-danger">
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-table me-2 text-danger"></i> Use Case 4 — SQLite Reporting & Stored Views Integration</h3>
+            <p class="text-muted mb-0">Query analytical insights directly from SQLite database views (<code>vw_crime_yearly</code>, <code>vw_crime_by_category</code>) and integrate SQL query results into Pandas DataFrames (<code>pd.read_sql</code>).</p>
+        </div>
+
+        <!-- View 1: vw_crime_yearly -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-eye me-2 text-primary"></i> SQLite Stored View: <code>vw_crime_yearly</code></span>
+                <span class="badge bg-primary">pd.read_sql("SELECT * FROM vw_crime_yearly", conn)</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Year</th>
+                                <th>Total Crimes Reported</th>
+                                <th>Total Arrests Made</th>
+                                <th>Arrest Rate (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.vw_crime_yearly %}
+                            <tr>
+                                <td class="fw-bold">{{ row.Year }}</td>
+                                <td>{{ row.total_crimes }}</td>
+                                <td><span class="badge bg-success fs-6">{{ row.total_arrests }}</span></td>
+                                <td><strong>{{ row.arrest_rate_pct }}%</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 Crime Types Query -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-trophy me-2 text-warning"></i> SQL Query: Top 5 Crime Types & Percentage Shares</span>
+                <span class="badge bg-warning text-dark">SELECT * FROM vw_crime_by_category LIMIT 5</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Primary Crime Type</th>
+                                <th>Crime Count</th>
+                                <th>Percentage Share of Total Crimes (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.top5_crime_types %}
+                            <tr>
+                                <td class="fw-bold">#{{ loop.index }}</td>
+                                <td><span class="badge bg-primary fs-6">{{ row.primary_type }}</span></td>
+                                <td>{{ row.crime_count }}</td>
+                                <td><strong>{{ row.percentage_share }}%</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Stored View: vw_crime_by_category -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-list-stars me-2 text-info"></i> SQLite Stored View: <code>vw_crime_by_category</code> (Full Breakdown)</span>
+                <span class="badge bg-info text-dark">SELECT * FROM vw_crime_by_category</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-sm table-striped table-hover mb-0 align-middle">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>#</th>
+                                <th>Primary Crime Type</th>
+                                <th>Incidents Count</th>
+                                <th>Percentage Share (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.all_categories_view %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td class="fw-bold">{{ row.primary_type }}</td>
+                                <td>{{ row.crime_count }}</td>
+                                <td>{{ row.percentage_share }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>Accenture Chicago Crime Analytics Capstone Project &copy; 2026</span>
+        </div>
+    </footer>
+</body>
+</html>

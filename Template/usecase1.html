@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Case 1 — Data Ingestion & Cleaning</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-shield-lock-fill me-2 fs-4 text-warning"></i>
+                Chicago Crime Analytics
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/usecase1"><i class="bi bi-database-check me-1"></i> Data Ingestion</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/usecase2"><i class="bi bi-bar-chart-line me-1"></i> Exploratory Analysis</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/usecase3"><i class="bi bi-graph-up-arrow me-1"></i> Statistical Insights</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/usecase4"><i class="bi bi-table me-1"></i> SQL Reporting</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="p-4 mb-4 bg-white rounded-3 shadow-sm border-start border-4 border-primary">
+            <h3 class="fw-bold text-dark mb-1"><i class="bi bi-database-check me-2 text-primary"></i> Use Case 1 — Load, Clean & Ingest Chicago Crime Data</h3>
+            <p class="text-muted mb-0">Inspect dataset schema, missing value percentages computed using NumPy, data cleaning, date parsing, feature extraction (`Year`, `Month`, `DayOfWeek`), and SQLite database ingestion.</p>
+        </div>
+
+        <!-- Summary Metrics -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card p-3 bg-white border-0 shadow-sm">
+                    <div class="text-muted small fw-bold">TOTAL ROWS</div>
+                    <div class="fs-3 fw-bold text-dark">{{ data.rows }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3 bg-white border-0 shadow-sm">
+                    <div class="text-muted small fw-bold">TOTAL COLUMNS</div>
+                    <div class="fs-3 fw-bold text-primary">{{ data.cols }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3 bg-white border-0 shadow-sm">
+                    <div class="text-muted small fw-bold">UNIQUE CRIME TYPES</div>
+                    <div class="fs-3 fw-bold text-success">{{ data.unique_crime_types }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card p-3 bg-white border-0 shadow-sm">
+                    <div class="text-muted small fw-bold">INVALID DATES COUNT</div>
+                    <div class="fs-3 fw-bold text-danger">{{ data.invalid_dates_count }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Missing Values Analysis Table -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold py-3">
+                <i class="bi bi-calculator me-2 text-warning"></i> Missing Values Analysis per Column (NumPy Calculated)
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Column Name</th>
+                                <th>Data Type</th>
+                                <th>Missing Count</th>
+                                <th>Missing Percentage (%)</th>
+                                <th>> 50% Threshold Check</th>
+                                <th>Cleaning & Preservation Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for col, info in data.missing_analysis.items() %}
+                            <tr>
+                                <td class="fw-bold">{{ col }}</td>
+                                <td><code>{{ data.schema[col] }}</code></td>
+                                <td>{{ info.count }}</td>
+                                <td>
+                                    <span class="badge {% if info.percentage > 0 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                        {{ info.percentage }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if info.percentage > 50 %}
+                                        <span class="badge bg-danger">EXCEEDS 50%</span>
+                                    {% else %}
+                                        <span class="badge bg-success">PASS</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if col in ['location_desc', 'block', 'primary_type', 'description', 'fbi_code'] %}
+                                        Categorical — Filled missing with <code>"UNKNOWN"</code> & normalized.
+                                    {% elif info.count > 0 %}
+                                        Numeric/Coordinate — Preserved <code>NaN</code> in SQLite; no rows discarded.
+                                    {% else %}
+                                        Complete — No missing values.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Rows Inspection -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white fw-bold py-3">
+                <i class="bi bi-table me-2 text-info"></i> Dataset Inspection — First 5 Sample Rows
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Case Number</th>
+                                <th>Date (Parsed)</th>
+                                <th>Primary Type</th>
+                                <th>Description</th>
+                                <th>Arrest</th>
+                                <th>Domestic</th>
+                                <th>Beat</th>
+                                <th>District</th>
+                                <th>Community</th>
+                                <th>Year</th>
+                                <th>Month</th>
+                                <th>DayOfWeek</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.first_10[:5] %}
+                            <tr>
+                                <td>{{ row.id }}</td>
+                                <td>{{ row.case_number }}</td>
+                                <td>{{ row.date }}</td>
+                                <td><span class="badge bg-primary">{{ row.primary_type }}</span></td>
+                                <td>{{ row.description }}</td>
+                                <td><span class="badge {% if row.arrest %}bg-success{% else %}bg-secondary{% endif %}">{{ row.arrest }}</span></td>
+                                <td><span class="badge {% if row.domestic %}bg-warning text-dark{% else %}bg-light text-dark{% endif %}">{{ row.domestic }}</span></td>
+                                <td>{{ row.beat_num }}</td>
+                                <td>{{ row.district_code }}</td>
+                                <td>{{ row.community_code }}</td>
+                                <td>{{ row.Year }}</td>
+                                <td>{{ row.Month }}</td>
+                                <td>{{ row.DayOfWeek }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <span>Accenture Chicago Crime Analytics Capstone Project &copy; 2026</span>
+        </div>
+    </footer>
+</body>
+</html>

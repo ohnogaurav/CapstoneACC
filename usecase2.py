@@ -18,7 +18,6 @@ def run_usecase2():
 
     conn = sqlite3.connect(DB_PATH)
     df = pd.read_sql("SELECT * FROM crimes", conn)
-    conn.close()
 
     # Ensure Date conversion
     if 'Date' in df.columns:
@@ -96,16 +95,34 @@ def run_usecase2():
     highest_crime_month = monthly_counts.idxmax()
 
     # 5. Top Community Areas
-    # List top 10 community areas with highest crime counts
-    top10_communities = df['community_code'].dropna().astype(int).value_counts().head(10).reset_index()
-    top10_communities.columns = ['Community_Code', 'Count']
-    top10_communities['Community_Code'] = top10_communities['Community_Code'].astype(str)
+    # List top 10 community areas with highest crime counts using readable names
+    community_lookup = pd.read_sql("SELECT community_code, community_name FROM city_community", conn)
+    community_lookup['community_code'] = pd.to_numeric(community_lookup['community_code'], errors='coerce')
+
+    top10_communities = (
+        df['community_code']
+        .dropna()
+        .astype(int)
+        .value_counts()
+        .head(10)
+        .reset_index()
+    )
+    top10_communities.columns = ['community_code', 'crime_count']
+
+    top10_communities = top10_communities.merge(
+        community_lookup[['community_code', 'community_name']],
+        on='community_code',
+        how='left'
+    )
+    top10_communities['community_name'] = top10_communities['community_name'].fillna('Unknown')
+    top10_communities = top10_communities[['community_name', 'crime_count']]
 
     plt.figure(figsize=(8, 4))
-    plt.bar(top10_communities['Community_Code'], top10_communities['Count'], color='coral')
-    plt.xlabel("Community Area Code")
+    plt.bar(top10_communities['community_name'], top10_communities['crime_count'], color='coral')
+    plt.xlabel("Community Area")
     plt.ylabel("Crime Count")
     plt.title("Top 10 Community Areas with Highest Crime Counts")
+    plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     plt.savefig(os.path.join(OUTPUT_DIR, "top_community_areas.png"))
     plt.close()
@@ -115,6 +132,8 @@ def run_usecase2():
     print(f"1. Which crime category is most frequent? {most_frequent_crime}")
     print(f"2. Is the arrest rate consistent across different years? Yearly rates range from {yearly_arrest_rate.min():.2f}% to {yearly_arrest_rate.max():.2f}%.")
     print(f"3. Which month has the highest crime frequency? Month {highest_crime_month}")
+
+    conn.close()
 
     return {
         "total_crimes": len(df),

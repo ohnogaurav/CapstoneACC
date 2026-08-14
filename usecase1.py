@@ -13,7 +13,7 @@ CSV_PATH = os.path.join(DB_DIR, "chicago_crime_dataset.csv")
 def run_usecase1():
     print("Running Use Case 1...")
 
-    # 1. Load data code
+    # 1. Loading data
     df = pd.read_csv(CSV_PATH)
     
     print("\nFirst 10 rows:")
@@ -26,7 +26,7 @@ def run_usecase1():
     print(f"\nNumber of rows: {rows}")
     print(f"Number of columns: {cols}")
 
-    # 2. Clean the dataset code
+    # 2. Claening csv
     # Convert Date column into datetime format
     df['Date'] = pd.to_datetime(df['date'], errors='coerce')
 

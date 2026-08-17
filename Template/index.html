@@ -149,35 +149,95 @@
             </div>
         </div>
 
+        <div class="dashboard-section">
+            <div class="card">
+                <h3>Database Query</h3>
+                <form id="queryForm" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="queryInput" placeholder="SELECT * FROM crimes LIMIT 10;" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 13px;">
+                    <button type="submit" style="background-color: #003366; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Run</button>
+                </form>
+                <div id="queryResults" style="overflow-x: auto; max-height: 300px; overflow-y: auto; display: none;">
+                    <table id="resultsTable" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                    </table>
+                </div>
+                <div id="queryMessage" style="padding: 10px; margin-top: 10px; border-radius: 4px; display: none;"></div>
+            </div>
+        </div>
+
     </div>
 
     <footer>
     </footer>
 
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        document.getElementById('queryForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const query = document.getElementById('queryInput').value.trim();
+            const messageDiv = document.getElementById('queryMessage');
+            const resultsDiv = document.getElementById('queryResults');
+            const table = document.getElementById('resultsTable');
             
-            const fileInput = document.getElementById('csvFile');
-            const statusDiv = document.getElementById('uploadStatus');
-            
-            if (!fileInput.files || fileInput.files.length === 0) {
-                statusDiv.textContent = 'Please select a file first';
-                statusDiv.className = 'upload-status error';
+            if (!query) {
+                messageDiv.textContent = 'Enter a query';
+                messageDiv.style.backgroundColor = '#f8d7da';
+                messageDiv.style.color = '#721c24';
+                messageDiv.style.display = 'block';
                 return;
             }
             
-            const fileName = fileInput.files[0].name;
-            const fileSize = (fileInput.files[0].size / 1024).toFixed(2);
-            
-            statusDiv.innerHTML = `<strong>Success!</strong> File "${fileName}" (${fileSize} KB) has been uploaded successfully. The analysis will be processed shortly.`;
-            statusDiv.className = 'upload-status success';
-            
-            fileInput.value = '';
-            
-            setTimeout(() => {
-                statusDiv.className = 'upload-status';
-            }, 5000);
+            fetch('/api/query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    table.innerHTML = '';
+                    if (data.data.length > 0) {
+                        const headerRow = document.createElement('tr');
+                        data.columns.forEach(col => {
+                            const th = document.createElement('th');
+                            th.textContent = col;
+                            th.style.cssText = 'background-color: #003366; color: white; padding: 8px; text-align: left; border: 1px solid #ddd;';
+                            headerRow.appendChild(th);
+                        });
+                        table.appendChild(headerRow);
+                        
+                        data.data.forEach(row => {
+                            const tr = document.createElement('tr');
+                            data.columns.forEach(col => {
+                                const td = document.createElement('td');
+                                td.textContent = row[col] !== null ? row[col] : '(null)';
+                                td.style.cssText = 'padding: 8px; border: 1px solid #ddd;';
+                                tr.appendChild(td);
+                            });
+                            table.appendChild(tr);
+                        });
+                        resultsDiv.style.display = 'block';
+                        messageDiv.style.display = 'none';
+                    } else {
+                        messageDiv.textContent = 'No results';
+                        messageDiv.style.backgroundColor = '#d4edda';
+                        messageDiv.style.color = '#155724';
+                        messageDiv.style.display = 'block';
+                        resultsDiv.style.display = 'none';
+                    }
+                } else {
+                    messageDiv.textContent = 'Error: ' + data.error;
+                    messageDiv.style.backgroundColor = '#f8d7da';
+                    messageDiv.style.color = '#721c24';
+                    messageDiv.style.display = 'block';
+                    resultsDiv.style.display = 'none';
+                }
+            })
+            .catch(e => {
+                messageDiv.textContent = 'Error: ' + e.message;
+                messageDiv.style.backgroundColor = '#f8d7da';
+                messageDiv.style.color = '#721c24';
+                messageDiv.style.display = 'block';
+                resultsDiv.style.display = 'none';
+            });
         });
     </script>
 </body>

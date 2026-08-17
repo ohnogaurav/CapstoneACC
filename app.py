@@ -1,6 +1,8 @@
 import os
 import sys
-from flask import Flask, render_template, send_from_directory
+import sqlite3
+import json
+from flask import Flask, render_template, send_from_directory, request, jsonify
 
 import usecase1
 import usecase2
@@ -72,6 +74,47 @@ def page_usecase3():
 def page_usecase4():
     uc4_data = usecase4.run_usecase4()
     return render_template('usecase4.html', data=uc4_data)
+
+
+# API endpoint for executing queries
+@app.route('/api/query', methods=['POST'])
+def execute_query():
+    try:
+        data = request.get_json()
+        query = data.get('query', '').strip()
+        
+        if not query:
+            return jsonify({'success': False, 'error': 'Query cannot be empty'})
+        
+        # Security check: only allow SELECT queries (read-only)
+        if not query.upper().startswith('SELECT'):
+            return jsonify({'success': False, 'error': 'Only SELECT queries are allowed'})
+        
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        conn.close()
+        
+        if rows:
+            columns = [description[0] for description in cursor.description]
+            data_list = [dict(row) for row in rows]
+            return jsonify({
+                'success': True,
+                'data': data_list,
+                'columns': columns
+            })
+        else:
+            return jsonify({
+                'success': True,
+                'data': [],
+                'columns': []
+            })
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 
 # Dummy placeholder route for the future "upload your own CSV" feature.

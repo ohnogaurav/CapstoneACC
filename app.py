@@ -78,27 +78,24 @@ def page_usecase4():
 
 # API endpoint for executing queries
 @app.route('/api/query', methods=['POST'])
+
 def execute_query():
+    conn = None
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True) or {}
         query = data.get('query', '').strip()
         
         if not query:
             return jsonify({'success': False, 'error': 'Query cannot be empty'})
-        
-        # Security check: only allow SELECT queries (read-only)
-        if not query.upper().startswith('SELECT'):
-            return jsonify({'success': False, 'error': 'Only SELECT queries are allowed'})
-        
+
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
         cursor.execute(query)
-        rows = cursor.fetchall()
-        conn.close()
-        
-        if rows:
+
+        if cursor.description:
+            rows = cursor.fetchall()
             columns = [description[0] for description in cursor.description]
             data_list = [dict(row) for row in rows]
             return jsonify({
@@ -106,15 +103,21 @@ def execute_query():
                 'data': data_list,
                 'columns': columns
             })
-        else:
-            return jsonify({
-                'success': True,
-                'data': [],
-                'columns': []
-            })
+
+        conn.commit()
+        return jsonify({
+            'success': True,
+            'data': [],
+            'columns': []
+        })
     
     except Exception as e:
+        if conn is not None:
+            conn.rollback()
         return jsonify({'success': False, 'error': str(e)})
+    finally:
+        if conn is not None:
+            conn.close()
 
 
 # Dummy placeholder route for the future "upload your own CSV" feature.

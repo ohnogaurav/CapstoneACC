@@ -74,6 +74,15 @@ def page_usecase4():
     return render_template('usecase4.html', data=uc4_data)
 
 
+# Dummy placeholder route for the future "upload your own CSV" feature.
+# The upload button on the dashboard is currently disabled, so this
+# route isn't reachable yet -- it's just here so the wiring is ready
+# for when that feature gets built.
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    return "Custom CSV upload is coming soon!", 200
+
+
 if __name__ == '__main__':
     initialize_project()
     if '--no-server' in sys.argv:

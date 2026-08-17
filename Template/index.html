@@ -47,6 +47,16 @@
             <h3>Hourly Crime Intensity</h3>
             <img src="/output/hourly_crime_intensity.png" alt="Hourly Intensity">
         </div>
+
+        <!-- Dummy upload card: placeholder for a future "analyze your own CSV" feature -->
+        <div class="card">
+            <h3>Upload Your Own Crime Data (Coming Soon)</h3>
+            <p>In a future version, you'll be able to upload your own CSV file here and run the same analysis on it.</p>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="csv_file" accept=".csv" disabled>
+                <button type="submit" disabled>Upload CSV</button>
+            </form>
+        </div>
     </div>
 
     <footer>

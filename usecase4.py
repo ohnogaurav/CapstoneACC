@@ -68,6 +68,34 @@ def run_usecase4():
     print("\n3. Arrest count per year (from view):")
     print(df_yearly[['Year', 'total_arrests']])
 
+    # - Top 5 IUCR codes, joined with the iucr_codes lookup table for a readable description
+    df_top_iucr = pd.read_sql("""
+        SELECT
+            c.iucr_code,
+            COUNT(*) AS crime_count,
+            i.PRIMARY_TYPE AS iucr_primary_type,
+            i.DESCRIPTION AS iucr_description
+        FROM crimes c
+        LEFT JOIN iucr_codes i ON c.iucr_code = i.IUCR_CODE
+        GROUP BY c.iucr_code
+        ORDER BY crime_count DESC
+        LIMIT 5
+    """, conn)
+    print("\n4. Top 5 IUCR codes:")
+    print(df_top_iucr)
+
+    # - Top 5 FBI codes
+    df_top_fbi = pd.read_sql("""
+        SELECT fbi_code, COUNT(*) AS crime_count
+        FROM crimes
+        WHERE fbi_code IS NOT NULL
+        GROUP BY fbi_code
+        ORDER BY crime_count DESC
+        LIMIT 5
+    """, conn)
+    print("\n5. Top 5 FBI codes:")
+    print(df_top_fbi)
+
     conn.close()
 
     # 5. Visualization from SQLite Data
@@ -86,7 +114,9 @@ def run_usecase4():
     return {
         "vw_crime_yearly": df_yearly.to_dict(orient='records'),
         "top5_crime_types": df_top5.to_dict(orient='records'),
-        "all_categories_view": df_category.to_dict(orient='records')
+        "all_categories_view": df_category.to_dict(orient='records'),
+        "top5_iucr_codes": df_top_iucr.to_dict(orient='records'),
+        "top5_fbi_codes": df_top_fbi.to_dict(orient='records')
     }
 
 

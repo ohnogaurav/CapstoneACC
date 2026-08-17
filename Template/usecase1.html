@@ -25,6 +25,9 @@
             <p><strong>Total Columns:</strong> {{ data.cols }}</p>
             <p><strong>Unique Crime Types:</strong> {{ data.unique_crimes }}</p>
             <p><strong>Invalid Date Formats:</strong> {{ data.invalid_dates }}</p>
+            {% if data.cols_over_50 %}
+            <p><strong>Columns Dropped (&gt;50% Missing):</strong> {{ data.cols_over_50 | join(', ') }}</p>
+            {% endif %}
         </div>
 
         <div class="card">
@@ -42,7 +45,7 @@
                     {% for col, pct in data.missing_dict.items() %}
                     <tr>
                         <td>{{ col }}</td>
-                        <td>{{ data.schema[col] }}</td>
+                        <td>{{ data.schema[col] if col in data.schema else "dropped" }}</td>
                         <td>{{ pct }}%</td>
                         <td>{% if pct > 50 %}Yes{% else %}No{% endif %}</td>
                     </tr>
@@ -69,7 +72,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for row in data.first_10[:5] %}
+                        {% for row in data.first_5 %}
                         <tr>
                             <td>{{ row.id }}</td>
                             <td>{{ row.case_number }}</td>

@@ -62,6 +62,11 @@ def run_usecase1():
     print(missing_dict)
     print(f"\nColumns with > 50% missing values: {cols_over_50}")
 
+    # Drop columns that are more than 50% missing (they add little analytical value)
+    if cols_over_50:
+        df = df.drop(columns=cols_over_50)
+        print(f"Dropped columns (>50% missing): {cols_over_50}")
+
     # 5. Insert cleaned data into SQLite
     os.makedirs(DB_DIR, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
@@ -102,7 +107,8 @@ def run_usecase1():
         "rows": rows,
         "cols": cols,
         "schema": {col: str(dtype) for col, dtype in df.dtypes.items()},
-        "first_10": df.head(10).to_dict(orient="records"),
+        # Only 5 rows are needed for the preview table, so grab 5 directly
+        "first_5": df.head(5).to_dict(orient="records"),
         "missing_dict": missing_dict,
         "cols_over_50": cols_over_50,
         "unique_crimes": unique_crimes,

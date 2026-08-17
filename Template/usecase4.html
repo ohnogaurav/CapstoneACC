@@ -66,7 +66,52 @@
         </div>
 
         <div class="card">
-            <h3>3. Visualization from SQL Data</h3>
+            <h3>3. Top 5 IUCR Codes</h3>
+            <p>Joined against the <code>iucr_codes</code> lookup table for a readable description.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>IUCR Code</th>
+                        <th>Primary Type</th>
+                        <th>Description</th>
+                        <th>Crime Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.top5_iucr_codes %}
+                    <tr>
+                        <td>{{ row.iucr_code }}</td>
+                        <td>{{ row.iucr_primary_type }}</td>
+                        <td>{{ row.iucr_description }}</td>
+                        <td>{{ row.crime_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>4. Top 5 FBI Codes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>FBI Code</th>
+                        <th>Crime Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.top5_fbi_codes %}
+                    <tr>
+                        <td>{{ row.fbi_code }}</td>
+                        <td>{{ row.crime_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>5. Visualization from SQL Data</h3>
             <img src="/output/sql_yearly_crimes.png" alt="SQL Yearly Crimes">
         </div>
     </div>

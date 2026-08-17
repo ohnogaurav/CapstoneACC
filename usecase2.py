@@ -97,7 +97,8 @@ def run_usecase2():
     # 5. Top Community Areas
     # List top 10 community areas with highest crime counts using readable names
     community_lookup = pd.read_sql("SELECT community_code, community_name FROM city_community", conn)
-    community_lookup['community_code'] = pd.to_numeric(community_lookup['community_code'], errors='coerce')
+    # Cast the join key to int on BOTH sides so the merge always matches correctly
+    community_lookup['community_code'] = community_lookup['community_code'].astype(int)
 
     top10_communities = (
         df['community_code']
@@ -108,6 +109,7 @@ def run_usecase2():
         .reset_index()
     )
     top10_communities.columns = ['community_code', 'crime_count']
+    top10_communities['community_code'] = top10_communities['community_code'].astype(int)
 
     top10_communities = top10_communities.merge(
         community_lookup[['community_code', 'community_name']],

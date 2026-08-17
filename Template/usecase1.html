@@ -6,10 +6,10 @@
 </head>
 <body>
     <header>
-        <h1>Chicago Police Department — Crime Analytics Dashboard</h1>
+        <h1>CPD Crime Analytics Dashboard</h1>
         <nav>
             <a href="/">Dashboard</a>
-            <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
+            <a href="/usecase1" class="active">Use Case 1 (Data Cleaning)</a>
             <a href="/usecase2">Use Case 2 (EDA)</a>
             <a href="/usecase3">Use Case 3 (Statistics)</a>
             <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
@@ -26,19 +26,19 @@
             <p><strong>Unique Crime Types:</strong> {{ data.unique_crimes }}</p>
             <p><strong>Invalid Date Formats:</strong> {{ data.invalid_dates }}</p>
             {% if data.cols_over_50 %}
-            <p><strong>Columns Dropped (&gt;50% Missing):</strong> {{ data.cols_over_50 | join(', ') }}</p>
+            <p><strong>Columns Dropped (Over 50% Missing):</strong> {{ data.cols_over_50 | join(', ') }}</p>
             {% endif %}
         </div>
 
         <div class="card">
-            <h3>Missing Values Analysis (NumPy Calculated)</h3>
+            <h3>Missing Data Analysis</h3>
             <table>
                 <thead>
                     <tr>
                         <th>Column Name</th>
                         <th>Data Type</th>
                         <th>Missing Percentage (%)</th>
-                        <th>> 50% Missing?</th>
+                        <th>More than 50% Missing?</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,6 @@
     </div>
 
     <footer>
-        <p>Chicago Crime Data Analytics Capstone Project</p>
     </footer>
 </body>
 </html>

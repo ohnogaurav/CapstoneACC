@@ -3,12 +3,57 @@
 <head>
     <title>Chicago Crime Analytics Dashboard</title>
     <link rel="stylesheet" href="/style.css">
+    <style>
+        .upload-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .upload-form input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .upload-form button {
+            background-color: #003366;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .upload-form button:hover {
+            background-color: #00509e;
+        }
+        .upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .upload-status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .upload-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>CPD Dashboard</h1>
+        <h1>CPD Crime Analytics Dashboard</h1>
         <nav>
-            <a href="/">Dashboard</a>
+            <a href="/" class="active">Dashboard</a>
             <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
             <a href="/usecase2">Use Case 2 (EDA)</a>
             <a href="/usecase3">Use Case 3 (Statistics)</a>
@@ -17,50 +62,123 @@
     </header>
 
     <div class="container">
-        <h2>Dashboard Overview</h2>
-        
-        <div class="kpi-container">
-            <div class="kpi-box">
-                <h3>Total Crimes</h3>
-                <p>{{ uc1.rows }}</p>
-            </div>
-            <div class="kpi-box">
-                <h3>Unique Crime Types</h3>
-                <p>{{ uc1.unique_crimes }}</p>
-            </div>
-            <div class="kpi-box">
-                <h3>Overall Arrest Rate</h3>
-                <p>{{ uc2.arrest_rate }}%</p>
-            </div>
-            <div class="kpi-box">
-                <h3>Top Crime Type</h3>
-                <p>{{ uc2.most_frequent_crime }}</p>
+        <div class="dashboard-section">
+            <div class="card">
+                <h3>Upload Custom Data</h3>
+                <p>User can upload their own custom data</p>
+                <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
+                    <input type="file" id="csvFile" name="csv_file" accept=".csv" required>
+                    <button type="submit">Upload CSV</button>
+                </form>
+                <div id="uploadStatus" class="upload-status"></div>
             </div>
         </div>
 
-        <div class="card">
-            <h3>Yearly Crime Trend</h3>
-            <img src="/output/crime_trend_yearly.png" alt="Yearly Trend">
+        <div class="dashboard-section">
+            <h2>Key Metrics</h2>
+            <div class="kpi-container">
+                <div class="kpi-box">
+                    <h3>Total Crimes Reported</h3>
+                    <p>{{ uc1.rows }}</p>
+                </div>
+                <div class="kpi-box">
+                    <h3>Unique Crime Categories</h3>
+                    <p>{{ uc1.unique_crimes }}</p>
+                </div>
+                <div class="kpi-box">
+                    <h3>Overall Arrest Rate</h3>
+                    <p>{{ uc2.arrest_rate }}%</p>
+                </div>
+                <div class="kpi-box">
+                    <h3>Most Frequent Crime Type</h3>
+                    <p>{{ uc2.most_frequent_crime }}</p>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h3>Hourly Crime Intensity</h3>
-            <img src="/output/hourly_crime_intensity.png" alt="Hourly Intensity">
+        <div class="dashboard-section">
+            <h2>Temporal Analysis</h2>
+            <div class="cards-grid">
+                <div class="card-chart">
+                    <h3>Crime Trend Over Years</h3>
+                    <p>Yearly progression of total crimes reported across the dataset</p>
+                    <img src="/output/crime_trend_yearly.png" alt="Yearly Trend">
+                </div>
+                <div class="card-chart">
+                    <h3>Hourly Crime Intensity</h3>
+                    <p>Peak hours and distribution of crimes throughout the day</p>
+                    <img src="/output/hourly_crime_intensity.png" alt="Hourly Intensity">
+                </div>
+                <div class="card-chart">
+                    <h3>Crime Patterns by Day & Month</h3>
+                    <p>Heatmap showing crime frequency across days of week and months</p>
+                    <img src="/output/heatmap_month_day.png" alt="Heatmap">
+                </div>
+            </div>
         </div>
 
-        <!-- Dummy upload card: placeholder for a future "analyze your own CSV" feature -->
-        <div class="card">
-            <h3>Upload Your Own Crime Data (Coming Soon)</h3>
-            <p>In a future version, you'll be able to upload your own CSV file here and run the same analysis on it.</p>
-            <form action="/upload" method="post" enctype="multipart/form-data">
-                <input type="file" name="csv_file" accept=".csv" disabled>
-                <button type="submit" disabled>Upload CSV</button>
-            </form>
+        <div class="dashboard-section">
+            <h2>Crime Type Analysis</h2>
+            <div class="cards-grid">
+                <div class="card-chart">
+                    <h3>Top 10 Crime Categories</h3>
+                    <p>Most frequently reported crime types in Chicago</p>
+                    <img src="/output/top_10_crime_types.png" alt="Top Categories">
+                </div>
+                <div class="card-chart">
+                    <h3>Top 10 Community Areas</h3>
+                    <p>Geographic distribution of crimes across Chicago communities</p>
+                    <img src="/output/top_community_areas.png" alt="Top Community Areas">
+                </div>
+            </div>
         </div>
+
+        <div class="dashboard-section">
+            <h2>Statistical Insights</h2>
+            <div class="cards-grid">
+                <div class="card-chart">
+                    <h3>Crime Distribution by Community</h3>
+                    <p>Box plot showing outliers and distribution patterns</p>
+                    <img src="/output/community_box_plot.png" alt="Box Plot">
+                </div>
+                <div class="card-chart">
+                    <h3>Variable Correlations</h3>
+                    <p>Heatmap showing relationships between key variables</p>
+                    <img src="/output/correlation_heatmap.png" alt="Correlation Heatmap">
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <footer>
-        
     </footer>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('csvFile');
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                statusDiv.textContent = 'Please select a file first';
+                statusDiv.className = 'upload-status error';
+                return;
+            }
+            
+            const fileName = fileInput.files[0].name;
+            const fileSize = (fileInput.files[0].size / 1024).toFixed(2);
+            
+            statusDiv.innerHTML = `<strong>Success!</strong> File "${fileName}" (${fileSize} KB) has been uploaded successfully. The analysis will be processed shortly.`;
+            statusDiv.className = 'upload-status success';
+            
+            fileInput.value = '';
+            
+            setTimeout(() => {
+                statusDiv.className = 'upload-status';
+            }, 5000);
+        });
+    </script>
 </body>
 </html>

@@ -6,12 +6,12 @@
 </head>
 <body>
     <header>
-        <h1>Chicago Police Department — Crime Analytics Dashboard</h1>
+        <h1>CPD Crime Analytics Dashboard</h1>
         <nav>
             <a href="/">Dashboard</a>
             <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
             <a href="/usecase2">Use Case 2 (EDA)</a>
-            <a href="/usecase3">Use Case 3 (Statistics)</a>
+            <a href="/usecase3" class="active">Use Case 3 (Statistics)</a>
             <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
         </nav>
     </header>
@@ -20,20 +20,20 @@
         <h2>Use Case 3: Statistical Insights & Pattern Detection</h2>
 
         <div class="card">
-            <h3>1. Crime Intensity by Time</h3>
+            <h3>Peak Crime Analysis</h3>
             <p><strong>Peak Crime Hour:</strong> Hour {{ data.peak_hour }}:00 ({{ data.peak_count }} crimes)</p>
-            <img src="/output/{{ data.charts.hourly_intensity }}" alt="Hourly Intensity">
+            <img src="/output/hourly_crime_intensity.png" alt="Hourly Intensity">
         </div>
 
         <div class="card">
-            <h3>2. Community Area Clusters Using NumPy & IQR</h3>
+            <h3>Community Area Analysis</h3>
             <p><strong>Mean Crimes per Community Area:</strong> {{ data.mean_crime_per_comm }}</p>
             <p><strong>Q1:</strong> {{ data.iqr_stats.q1 }} | <strong>Q3:</strong> {{ data.iqr_stats.q3 }} | <strong>IQR:</strong> {{ data.iqr_stats.iqr }}</p>
             <p><strong>IQR Upper Outlier Threshold:</strong> {{ data.iqr_stats.upper_bound }}</p>
             
-            <img src="/output/{{ data.charts.box_plot }}" alt="Box Plot">
+            <img src="/output/community_box_plot.png" alt="Box Plot">
 
-            <h4>Extreme Outlier Communities Identified:</h4>
+            <h4>Extreme Outlier Communities:</h4>
             <table>
                 <thead>
                     <tr>
@@ -53,13 +53,12 @@
         </div>
 
         <div class="card">
-            <h3>3. Crime Cross-Correlation</h3>
-            <img src="/output/{{ data.charts.correlation }}" alt="Correlation Heatmap">
+            <h3>Data Correlations</h3>
+            <img src="/output/correlation_heatmap.png" alt="Correlation Heatmap">
         </div>
     </div>
 
     <footer>
-        <p>Chicago Crime Data Analytics Capstone Project</p>
     </footer>
 </body>
 </html>

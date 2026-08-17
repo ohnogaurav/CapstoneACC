@@ -107,7 +107,7 @@ def run_usecase1():
         "rows": rows,
         "cols": cols,
         "schema": {col: str(dtype) for col, dtype in df.dtypes.items()},
-        # Only 5 rows are needed for the preview table, so grab 5 directly
+        # Only 5 rows are needed
         "first_5": df.head(5).to_dict(orient="records"),
         "missing_dict": missing_dict,
         "cols_over_50": cols_over_50,

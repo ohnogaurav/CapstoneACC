@@ -6,11 +6,11 @@
 </head>
 <body>
     <header>
-        <h1>Chicago Police Department — Crime Analytics Dashboard</h1>
+        <h1>CPD Crime Analytics Dashboard</h1>
         <nav>
             <a href="/">Dashboard</a>
             <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
-            <a href="/usecase2">Use Case 2 (EDA)</a>
+            <a href="/usecase2" class="active">Use Case 2 (EDA)</a>
             <a href="/usecase3">Use Case 3 (Statistics)</a>
             <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
         </nav>
@@ -20,35 +20,34 @@
         <h2>Use Case 2: Exploratory Analysis & Visualization of Crime</h2>
 
         <div class="card">
-            <h3>Key Summary Findings</h3>
-            <p><strong>Most Frequent Crime Category:</strong> {{ data.most_frequent_crime }}</p>
-            <p><strong>Overall Arrest Rate:</strong> {{ data.arrest_rate }}%</p>
-            <p><strong>Month with Highest Crime Frequency:</strong> Month {{ data.highest_crime_month }}</p>
+            <h3>Key Findings</h3>
+            <p><strong>Most Frequent Crime:</strong> {{ data.most_frequent_crime }}</p>
+            <p><strong>Arrest Rate:</strong> {{ data.arrest_rate }}%</p>
+            <p><strong>Peak Crime Month:</strong> Month {{ data.highest_crime_month }}</p>
         </div>
 
         <div class="card">
             <h3>1. Crime Trend Over Years</h3>
-            <img src="/output/{{ data.charts.crime_trend }}" alt="Crime Trend">
+            <img src="/output/crime_trend_yearly.png" alt="Crime Trend">
         </div>
 
         <div class="card">
             <h3>2. Top 10 Crime Categories (Primary Type)</h3>
-            <img src="/output/{{ data.charts.top_categories }}" alt="Top Categories">
+            <img src="/output/top_10_crime_types.png" alt="Top Categories">
         </div>
 
         <div class="card">
             <h3>3. Heatmap of Crime by Month and Day of Week</h3>
-            <img src="/output/{{ data.charts.heatmap }}" alt="Heatmap">
+            <img src="/output/heatmap_month_day.png" alt="Heatmap">
         </div>
 
         <div class="card">
             <h3>4. Top 10 Community Areas</h3>
-            <img src="/output/{{ data.charts.top_communities }}" alt="Top Community Areas">
+            <img src="/output/top_community_areas.png" alt="Top Community Areas">
         </div>
     </div>
 
     <footer>
-        <p>Chicago Crime Data Analytics Capstone Project</p>
     </footer>
 </body>
 </html>

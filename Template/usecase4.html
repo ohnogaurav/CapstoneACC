@@ -6,13 +6,13 @@
 </head>
 <body>
     <header>
-        <h1>Chicago Police Department — Crime Analytics Dashboard</h1>
+        <h1>CPD Crime Analytics Dashboard</h1>
         <nav>
             <a href="/">Dashboard</a>
             <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
             <a href="/usecase2">Use Case 2 (EDA)</a>
             <a href="/usecase3">Use Case 3 (Statistics)</a>
-            <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
+            <a href="/usecase4" class="active">Use Case 4 (SQL Reporting)</a>
         </nav>
     </header>
 
@@ -20,7 +20,7 @@
         <h2>Use Case 4: SQLite Reporting & Integration</h2>
 
         <div class="card">
-            <h3>1. Stored View: <code>vw_crime_yearly</code></h3>
+            <h3>Yearly Crime Summary (Database View)</h3>
             <p><code>SELECT * FROM vw_crime_yearly</code></p>
             <table>
                 <thead>
@@ -43,8 +43,8 @@
         </div>
 
         <div class="card">
-            <h3>2. Top 5 Crime Types (from <code>vw_crime_by_category</code>)</h3>
-            <p><code>SELECT * FROM vw_crime_by_category LIMIT 5</code></p>
+            <h3>Top 5 Crime Categories</h3>
+            <p>Most frequently reported crime categories</p>
             <table>
                 <thead>
                     <tr>
@@ -66,8 +66,8 @@
         </div>
 
         <div class="card">
-            <h3>3. Top 5 IUCR Codes</h3>
-            <p>Joined against the <code>iucr_codes</code> lookup table for a readable description.</p>
+            <h3>Top 5 IUCR Codes with Descriptions</h3>
+            <p>Crime codes joined with detailed descriptions</p>
             <table>
                 <thead>
                     <tr>
@@ -91,7 +91,7 @@
         </div>
 
         <div class="card">
-            <h3>4. Top 5 FBI Codes</h3>
+            <h3>Top 5 FBI Codes</h3>
             <table>
                 <thead>
                     <tr>
@@ -111,13 +111,12 @@
         </div>
 
         <div class="card">
-            <h3>5. Visualization from SQL Data</h3>
+            <h3>SQL Data Visualization</h3>
             <img src="/output/sql_yearly_crimes.png" alt="SQL Yearly Crimes">
         </div>
     </div>
 
     <footer>
-        <p>Chicago Crime Data Analytics Capstone Project</p>
     </footer>
 </body>
 </html>

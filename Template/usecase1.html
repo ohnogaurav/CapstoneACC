@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Use Case 1 — Data Ingestion & Cleaning</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>Chicago Police Department — Crime Analytics Dashboard</h1>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
+            <a href="/usecase2">Use Case 2 (EDA)</a>
+            <a href="/usecase3">Use Case 3 (Statistics)</a>
+            <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Use Case 1: Load and Clean Chicago Crime Data</h2>
+        
+        <div class="card">
+            <h3>Dataset Summary</h3>
+            <p><strong>Total Rows:</strong> {{ data.rows }}</p>
+            <p><strong>Total Columns:</strong> {{ data.cols }}</p>
+            <p><strong>Unique Crime Types:</strong> {{ data.unique_crimes }}</p>
+            <p><strong>Invalid Date Formats:</strong> {{ data.invalid_dates }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Missing Values Analysis (NumPy Calculated)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                        <th>Missing Percentage (%)</th>
+                        <th>> 50% Missing?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for col, pct in data.missing_dict.items() %}
+                    <tr>
+                        <td>{{ col }}</td>
+                        <td>{{ data.schema[col] }}</td>
+                        <td>{{ pct }}%</td>
+                        <td>{% if pct > 50 %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>First 5 Rows Preview</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Case Number</th>
+                            <th>Date</th>
+                            <th>Primary Type</th>
+                            <th>Description</th>
+                            <th>Arrest</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>DayOfWeek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data.first_10[:5] %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.case_number }}</td>
+                            <td>{{ row.date }}</td>
+                            <td>{{ row.primary_type }}</td>
+                            <td>{{ row.description }}</td>
+                            <td>{{ row.arrest }}</td>
+                            <td>{{ row.Year }}</td>
+                            <td>{{ row.Month }}</td>
+                            <td>{{ row.DayOfWeek }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Chicago Crime Data Analytics Capstone Project</p>
+    </footer>
+</body>
+</html>

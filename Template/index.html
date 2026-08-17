@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chicago Crime Analytics Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>CPD Dashboard</h1>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
+            <a href="/usecase2">Use Case 2 (EDA)</a>
+            <a href="/usecase3">Use Case 3 (Statistics)</a>
+            <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Dashboard Overview</h2>
+        
+        <div class="kpi-container">
+            <div class="kpi-box">
+                <h3>Total Crimes</h3>
+                <p>{{ uc1.rows }}</p>
+            </div>
+            <div class="kpi-box">
+                <h3>Unique Crime Types</h3>
+                <p>{{ uc1.unique_crimes }}</p>
+            </div>
+            <div class="kpi-box">
+                <h3>Overall Arrest Rate</h3>
+                <p>{{ uc2.arrest_rate }}%</p>
+            </div>
+            <div class="kpi-box">
+                <h3>Top Crime Type</h3>
+                <p>{{ uc2.most_frequent_crime }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Yearly Crime Trend</h3>
+            <img src="/output/crime_trend_yearly.png" alt="Yearly Trend">
+        </div>
+
+        <div class="card">
+            <h3>Hourly Crime Intensity</h3>
+            <img src="/output/hourly_crime_intensity.png" alt="Hourly Intensity">
+        </div>
+    </div>
+
+    <footer>
+        
+    </footer>
+</body>
+</html>

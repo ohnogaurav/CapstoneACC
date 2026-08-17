@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Use Case 4 — SQLite Reporting & Integration</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>Chicago Police Department — Crime Analytics Dashboard</h1>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/usecase1">Use Case 1 (Data Cleaning)</a>
+            <a href="/usecase2">Use Case 2 (EDA)</a>
+            <a href="/usecase3">Use Case 3 (Statistics)</a>
+            <a href="/usecase4">Use Case 4 (SQL Reporting)</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Use Case 4: SQLite Reporting & Integration</h2>
+
+        <div class="card">
+            <h3>1. Stored View: <code>vw_crime_yearly</code></h3>
+            <p><code>SELECT * FROM vw_crime_yearly</code></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Total Crimes</th>
+                        <th>Total Arrests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.vw_crime_yearly %}
+                    <tr>
+                        <td>{{ row.Year }}</td>
+                        <td>{{ row.total_crimes }}</td>
+                        <td>{{ row.total_arrests }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>2. Top 5 Crime Types (from <code>vw_crime_by_category</code>)</h3>
+            <p><code>SELECT * FROM vw_crime_by_category LIMIT 5</code></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Primary Type</th>
+                        <th>Crime Count</th>
+                        <th>Percentage (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.top5_crime_types %}
+                    <tr>
+                        <td>{{ row.primary_type }}</td>
+                        <td>{{ row.crime_count }}</td>
+                        <td>{{ row.percentage }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>3. Visualization from SQL Data</h3>
+            <img src="/output/sql_yearly_crimes.png" alt="SQL Yearly Crimes">
+        </div>
+    </div>
+
+    <footer>
+        <p>Chicago Crime Data Analytics Capstone Project</p>
+    </footer>
+</body>
+</html>
